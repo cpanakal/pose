@@ -8,24 +8,29 @@
         $str = stripslashes($str);
         return mysqli_real_escape_string($_db, $str);
     }
-    function SavePostToDB($_db, $_user, $_title, $_text, $_time, $_file_name, $_filter)
+    function SavePostToDB($_db, $_device, $_date, $_time, $_reason)
     {
-        /* Prepared statement, stage 1: prepare query */
-        if (!($stmt = $_db->prepare("INSERT INTO WALLI(USER_USERNAME, STATUS_TITLE, STATUS_TEXT, TIME_STAMP, IMAGE_NAME, FILTER) VALUES (?, ?, ?, ?, ?, ?)")))
-        {
-            echo "Prepare failed: (" . $_db->errno . ") " . $_db->error;
-        }
-        /* Prepared statement, stage 2: bind parameters*/
-        if (!$stmt->bind_param('ssssss', $_user, $_title, $_text, $_time, $_file_name, $_filter))
-        {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-        }
-        /* Prepared statement, stage 3: execute*/
-        if (!$stmt->execute())
-        {
-            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-        }
+        echo "Saving to DB";
+    	/* Prepared statement, stage 1: prepare query */
+    	if (!($stmt = $_db->prepare("INSERT INTO Apppointment(device, appt_date, appt_time, reason) VALUES (?, ?, ?, ?)")))
+    	{
+	    	echo "Prepare failed: (" . $_db->errno . ") " . $_db->error;
+    	}
+
+	    /* Prepared statement, stage 2: bind parameters*/
+    	if (!$stmt->bind_param('ssss', $_device, $_date, $_time, $_reason))
+    	{
+    		echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+	    }
+
+    	/* Prepared statement, stage 3: execute*/
+    	if (!$stmt->execute())
+    	{
+    		echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+    	}
+     
     }
+
     function getContent($_db, $user)
     {
         $query = "SELECT USER_USERNAME, STATUS_TITLE, STATUS_TEXT, TIME_STAMP, IMAGE_NAME, FILTER, COMMENT_ID FROM WALLI ORDER BY TIME_STAMP DESC";
